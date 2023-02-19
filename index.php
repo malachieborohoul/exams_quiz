@@ -1,6 +1,77 @@
 <?php session_start(); ?>
 <?php require('includes/header.php') ?>
 
+
+
+<!-- Modal Modifier une option -->
+<div class="modal" id="editOptionModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editOption">
+
+
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Modifier une option</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="form-group">
+                            <input type="text" style="display: none;" name="id" class="form-control id" placeholder="Entrez le titre" required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" name="nom" class="form-control nom" placeholder="Entrez le titre" required>
+                        </div>
+                        <br>
+
+
+                        <div class="row justify-content-center">
+                            <div class="col-md-3">
+                                <button name="btnedit" class="btn btn-success">Modifier</button>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+
+</div>
+
+<!--  Modal de suppression option -->
+<div class="modal fade" id="deleteOptionModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form id="deleteOption">
+                <!-- Modal body -->
+                <div class="modal-body justify-content-center">
+                    <input type="hidden" name="id" id="deleteId">
+                    Voulez vous supprimer ?
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary " data-dismiss="modal">Fermer</button>
+                    <button name="btndelete" class="btn btn-danger cdelete_btn">Oui</button>
+                    <div class="spinner_Delete"></div>
+                </div>
+
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
 <!--  Modal de suppression -->
 <div class="modal fade" id="deleteModal">
     <div class="modal-dialog modal-sm">
@@ -135,6 +206,66 @@
     </div>
 </div>
 
+
+<!-- Modal Modifier une question -->
+<div class="modal" id="editQuestionModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editQuestion">
+
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title justify-content">Modifier une question</h4>
+                    <div class="spinner"><span class='spinner-border  text-primary'></span><span class='spinner-border  text-primary'></span></div>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="form-group">
+                            <label><span class="text text-danger">* </span>Id </label>
+                            <input type="hidden" name="id" class="form-control id" required>
+                            <span id='error_nom' class="text text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label><span class="text text-danger">* </span>Titre </label>
+                            <input type="text" name="titre" class="form-control titre" required>
+                            <span id='error_nom' class="text text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label><span class="text text-danger">* </span>Note </label>
+                            <input type="number" name="note" class="form-control note" required>
+                            <span id='error_nom' class="text text-danger"></span>
+                        </div>
+                        <br>
+                        <h6>Options</h6>
+                        <div class="old_options">
+
+                        </div>
+
+                        <a href="javascript:void(0)" class="addOptionBtn btn btn-success">AJouter option</a>
+                        <div class="options"></div>
+
+
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+                            <button class="btn btn-primary save_question_btn">Ajouter</button>
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
 <!-- Modal Ajouter une reponse -->
 <div class="modal" id="addReponseModal">
     <div class="modal-dialog">
@@ -189,6 +320,234 @@
         // getQuestions();
 
         getQuiz();
+
+        //Supprimer option
+        $("#deleteOption").submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            formData.append('btndelete', true);
+            $.ajax({
+                method: "POST",
+                url: "controllers/options.php",
+                data: formData,
+                processData: false,
+                contentType: false,
+                // beforeSend: function () {
+                //     $('.spinner_Delete').html("<span class='spinner-border  text-primary'></span><span class='spinner-border  text-primary'></span>");
+                // },
+                success: function(response) {
+                    var res = jQuery.parseJSON(response);
+
+                    console.log(res)
+
+                    // $('.spinner_Delete').html("");
+                    var questionId = res.res.id_qs
+
+                    $.ajax({
+                        method: "GET",
+                        url: "controllers/questions.php?idQuestion=" + questionId,
+
+                        success: function(response) {
+                            var res = jQuery.parseJSON(response);
+                            $('.old_options').html('')
+
+
+                            $('.id').val(res.res.id_qs)
+                            $('.titre').val(res.res.titre_qs)
+                            $('.note').val(res.res.note_qs)
+                            $.each(res.opt, function(index, value) {
+                                $('.old_options').append('<div class="row">\
+                            <div class="col-md-6">' + value.nom_opt + '</div>\
+                            <div class="col-md-2">\
+                                <p style="display:none" class="mb-0 id">' + value.id_opt + '</p>\
+                                <a class="editOption_btn" href="javascript:void(0)">Modifier</a></div>\
+                            <div class="col-md-2">\
+                                <p style="display:none" class="mb-0 id">' + value.id_opt + '</p>\
+                                <a class="deleteOption_btn" href="javascript:void(0)">Supprimer</a></div>\
+                            </div>')
+                            });
+
+                            $('.old_options').append('<br>')
+                            $('#editQuestionModal').modal('show')
+
+
+                        }
+                    });
+                    $('#editQuestionModal').modal('show')
+
+                    succ(res.message)
+
+                }
+            });
+        });
+
+        //Ouvir modal Supprimer une option
+        $(document).on('click', '.deleteOption_btn', function(e) {
+            var optionId = $(this).closest('div').find('.id').text();
+
+            $('#deleteId').val(optionId)
+            $('#editQuestionModal').modal('hide')
+
+
+            $('#deleteOptionModal').modal('show')
+
+
+
+        });
+
+        //Ouvir modal Supprimer un question
+        $(document).on('click', '.deleteQuestion_btn', function(e) {
+            var questionId = $(this).closest('div').find('.id').text();
+
+            $('#deleteId').val(questionId)
+
+            // $('#editQuestionModal').modal('hide')
+            $('#deleteModal').modal('show')
+
+
+
+        });
+
+        // Modifier une option
+        $('#editOption').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            formData.append('btnedit', true);
+            $.ajax({
+                method: "POST",
+                url: "controllers/options.php",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    var res = jQuery.parseJSON(response);
+                    if (res.status == 422) {
+                        err(res.message)
+                    } else if (res.status == 200) {
+                        // $('#addQuiz')[0].reset();
+                        $('#editOptionModal').modal('hide')
+
+                        // console.log(res)
+                        var questionId = res.res.id_qs
+                        $.ajax({
+                            method: "GET",
+                            url: "controllers/questions.php?idQuestion=" + questionId,
+
+                            success: function(response) {
+                                var res = jQuery.parseJSON(response);
+                                $('.old_options').html('')
+
+
+                                $('.id').val(res.res.id_qs)
+                                $('.titre').val(res.res.titre_qs)
+                                $('.note').val(res.res.note_qs)
+                                $.each(res.opt, function(index, value) {
+                                    $('.old_options').append('<div class="row">\
+                            <div class="col-md-6">' + value.nom_opt + '</div>\
+                            <div class="col-md-2">\
+                                <p style="display:none" class="mb-0 id">' + value.id_opt + '</p>\
+                                <a class="editOption_btn" href="javascript:void(0)">Modifier</a></div>\
+                                javascript:void(0)<div class="col-md-2"><a class="deleteOption_btn" href="javascript:void(0)">Supprimer</a></div>\
+                         </div>')
+                                });
+
+                                $('.old_options').append('<br>')
+                                $('#editQuestionModal').modal('show')
+
+
+                            }
+                        });
+                        $('#editQuestionModal').modal('show')
+
+                        succ(res.message)
+
+
+                    }
+                }
+            });
+        });
+
+        //Ouvir modal Modifier un option d'une question
+        $(document).on('click', '.editOption_btn', function(e) {
+            var optionId = $(this).closest('div').find('.id').text();
+
+            // alert(optionId)
+
+            // $('#deleteId').val(quizId)
+
+            $.ajax({
+                method: "GET",
+                url: "controllers/options.php?optionId=" + optionId,
+
+                success: function(response) {
+                    var res = jQuery.parseJSON(response);
+
+                    // console.log(res)
+                    // $('.old_options').html('')
+
+
+                    $('.id').val(res.res.id_opt)
+                    $('.nom').val(res.res.nom_opt)
+                    // $('.titre').val(res.res.titre_qs)
+                    // $('.note').val(res.res.note_qs)
+
+                    // $('.old_options').append('<br>')
+                    $('#editQuestionModal').modal('hide')
+                    $('#editOptionModal').modal('show')
+
+
+                }
+            });
+
+
+
+
+        });
+
+        //Ouvir modal Modifier un question
+        $(document).on('click', '.editQuestion_btn', function(e) {
+            var questionId = $(this).closest('div').find('.id').text();
+
+
+            // alert(questionId)
+
+            // $('#deleteId').val(quizId)
+
+            $.ajax({
+                method: "GET",
+                url: "controllers/questions.php?idQuestion=" + questionId,
+
+                success: function(response) {
+                    var res = jQuery.parseJSON(response);
+                    $('.old_options').html('')
+
+
+                    $('.id').val(res.res.id_qs)
+                    $('.titre').val(res.res.titre_qs)
+                    $('.note').val(res.res.note_qs)
+                    $.each(res.opt, function(index, value) {
+                        $('.old_options').append('<div class="row">\
+                            <div class="col-md-6">' + value.nom_opt + '</div>\
+                            <div class="col-md-2">\
+                                <p style="display:none" class="mb-0 id">' + value.id_opt + '</p>\
+                                <a class="editOption_btn" href="javascript:void(0)">Modifier</a></div>\
+                            <div class="col-md-2">\
+                                <p style="display:none" class="mb-0 id">' + value.id_opt + '</p>\
+                                <a class="deleteOption_btn" href="javascript:void(0)">Supprimer</a></div>\
+                            </div>')
+                    });
+
+                    $('.old_options').append('<br>')
+                    $('#editQuestionModal').modal('show')
+
+
+                }
+            });
+
+
+
+
+        });
 
 
         //Ouvir modal Supprimer un quiz
@@ -247,7 +606,7 @@
 
             $.ajax({
                 method: "GET",
-                url: "controllers/get-quiz.php?quizId=" + quizId,
+                url: "controllers/quiz.php?quizId=" + quizId,
 
                 success: function(response) {
                     var res = jQuery.parseJSON(response);
@@ -475,6 +834,16 @@
             icon: 'error',
             title: 'Oops...',
             text: 'Une erreur est survenue!',
+        })
+    }
+
+    function succ(msg) {
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: msg,
+            showConfirmButton: false,
+            timer: 1500
         })
     }
 

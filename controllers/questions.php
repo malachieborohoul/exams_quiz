@@ -43,7 +43,7 @@ if (isset($_POST['save_question_btn'])) {
     }
 }
 
-// GET ALL QUESTIONS
+// GET ALL QUESTIONS FOR PARTICULAR QUIZ
 
 if (isset($_GET['questions'])) {
     $quizId = $_SESSION['quizId'];
@@ -107,6 +107,20 @@ if (isset($_GET['questions'])) {
                     ' 
                 <div class="border-bottom"></div> 
                 <p class="mb-0 id"><b>Bonne reponse:</b> ' . $option['nom_opt'] . '</p>
+                <div class="row">
+                    
+
+                    <div class="col-md-2">
+                        <p style="display:none" class="mb-0 id">' . $row['id_qs'] . '</p>
+                        <a style="text-decoration:none" class="text-danger deleteQuestion_btn" href="javascript:void(0)">Supprimer</a>
+                    </div>
+                    
+
+                    <div class="col-md-2 ">
+                        <p style="display:none" class="mb-0 id">' . $row['id_qs'] . '</p>
+                        <a style="text-decoration:none" class="text-success editQuestion_btn" href="javascript:void(0)">Modifier</a>
+                    </div>
+                </div>
 
                     </div>
                             </div>
@@ -151,6 +165,40 @@ if(isset($_GET['questionId'])){
         $res=[
             "status"=>200,
             "res"=>$query->fetchAll(PDO::FETCH_ASSOC),
+
+        ];
+        echo json_encode($res);
+        return false;
+    }else{
+        $res=[
+            "status"=>500,
+            "message"=>"Une erreur est survenue"
+        ];
+        echo json_encode($res);
+        return false;
+    }
+}
+
+
+// RECUPERER UNE QUESTION
+
+if(isset($_GET['idQuestion'])){
+    $questionId = $_GET['idQuestion'];
+    $_SESSION['idQuestion']=$_GET['idQuestion'];
+
+
+
+
+    $sql= "SELECT * FROM questions WHERE id_qs='$questionId';";
+    $query=$db->prepare($sql);
+    if($query->execute()){
+        $sql= "SELECT * FROM options WHERE id_qs='$questionId';";
+        $que=$db->prepare($sql);
+        $que->execute();
+        $res=[
+            "status"=>200,
+            "res"=>$query->fetch(PDO::FETCH_ASSOC),
+            "opt"=>$que->fetchAll(PDO::FETCH_ASSOC)
 
         ];
         echo json_encode($res);
