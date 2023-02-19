@@ -1,6 +1,90 @@
 <?php session_start(); ?>
 <?php require('includes/header.php') ?>
 
+<!--  Modal de suppression -->
+<div class="modal fade" id="deleteModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form id="delete">
+                <!-- Modal body -->
+                <div class="modal-body justify-content-center">
+                    <input type="hidden" name="id" id="deleteId">
+                    Voulez vous supprimer ?
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary " data-dismiss="modal">Fermer</button>
+                    <button name="btndelete" class="btn btn-danger cdelete_btn">Oui</button>
+                    <div class="spinner_Delete"></div>
+                </div>
+
+            </form>
+
+
+        </div>
+    </div>
+</div>
+<!-- Modal Modifier un quiz -->
+<div class="modal" id="editQuizModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editQuiz">
+
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title justify-content">Modifier un quiz</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="form-group">
+                            <input type="text" style="display: none;" name="id" class="form-control id" placeholder="Entrez le titre" required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" name="titre" class="form-control titre" placeholder="Entrez le titre" required>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <textarea class="form-control description" name="description" placeholder="Entrez description" rows="8" required></textarea>
+
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="time" name="temps" class="form-control temps" placeholder="Entrez le titre" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="number" name="noteMax" class="form-control noteMax" placeholder="Note maximum" required>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="row justify-content-center">
+                            <div class="col-md-3">
+                                <button name="btnedit" class="btn btn-success">Modifier</button>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+
+</div>
 
 <!-- Modal Ajouter une question -->
 <div class="modal" id="addQuestionModal">
@@ -69,8 +153,8 @@
                     <div class="container">
                         <input type="text" name="question_id" style="display:none" class="question_id">
 
-                        <select class="form-control" name="reponse" id="reponse" >
-                            
+                        <select class="form-control" name="reponse" id="reponse">
+
                         </select>
                         <!-- Modal footer -->
                         <div class="modal-footer">
@@ -88,6 +172,7 @@
 </div>
 
 <div class="col-md-9 quizdata">
+    <div class="spinner_quiz"></div>
     <div class="ajouter-question"></div>
 
 </div>
@@ -105,6 +190,113 @@
 
         getQuiz();
 
+
+        //Ouvir modal Supprimer un quiz
+        $(document).on('click', '.deleteQuiz_btn', function(e) {
+            var quizId = $(this).closest('div').find('.id').text();
+
+            $('#deleteId').val(quizId)
+
+            $('#deleteModal').modal('show')
+
+
+
+        });
+
+        //Supprimer quiz
+        $("#delete").submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            formData.append('btndelete', true);
+            $.ajax({
+                method: "POST",
+                url: "controllers/quiz.php",
+                data: formData,
+                processData: false,
+                contentType: false,
+                // beforeSend: function () {
+                //     $('.spinner_Delete').html("<span class='spinner-border  text-primary'></span><span class='spinner-border  text-primary'></span>");
+                // },
+                success: function(response) {
+                    var res = jQuery.parseJSON(response);
+
+                    // $('.spinner_Delete').html("");
+
+                    if (res.status == 422) {
+                        err(res.message)
+                    } else if (res.status == 200) {
+                        // $('#addQuiz')[0].reset();
+                        $('#deleteModal').modal('hide');
+                        suc(res.message);
+                        getQuiz()
+
+                        // $('#editQuizModal').modal('hide')
+
+                    }
+
+                }
+            });
+        });
+
+
+        //Ouvir modal Modifier un quiz
+        $(document).on('click', '.editQuiz_btn', function() {
+            var quizId = $(this).closest('div').find('.id').text();
+
+            // alert(quizId)
+
+            $.ajax({
+                method: "GET",
+                url: "controllers/get-quiz.php?quizId=" + quizId,
+
+                success: function(response) {
+                    var res = jQuery.parseJSON(response);
+
+                    $('.id').val(res.res.id)
+                    $('.titre').val(res.res.titre)
+                    $('.description').val(res.res.description)
+                    $('.temps').val(res.res.temps)
+                    $('.noteMax').val(res.res.noteMax)
+                    $("#editQuizModal").modal('show')
+
+
+                }
+            });
+
+
+
+            // $('.titre').val()
+
+            // $("#editQuizModal").modal('show')
+        });
+
+        // Modifier un quiz
+        $('#editQuiz').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            formData.append('btnedit', true);
+            $.ajax({
+                method: "POST",
+                url: "controllers/quiz.php",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    var res = jQuery.parseJSON(response);
+                    if (res.status == 422) {
+                        err(res.message)
+                    } else if (res.status == 200) {
+                        // $('#addQuiz')[0].reset();
+                        suc(res.message)
+                        getQuiz()
+
+                        $('#editQuizModal').modal('hide')
+
+                    }
+                }
+            });
+        });
+
         //Ajouter une question
         $('#addQuestion').submit(function(e) {
             e.preventDefault();
@@ -112,7 +304,7 @@
             formData.append('save_question_btn', true);
             $.ajax({
                 method: "POST",
-                url: "controllers/add-question.php",
+                url: "controllers/questions.php",
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -123,6 +315,12 @@
                     } else if (res.status == 200) {
                         $('#addQuestion')[0].reset();
                         $('#addQuestionModal').modal('hide');
+
+                        $('.quizdata').html("");
+
+                        $('.quizdata').append('<div class="row justify-content-center"><div class="col-md-3"><button class="btn btn-primary refresh_btn">Rafraichir</button></div><div class="col-md-9"><button class="btn btn-primary add_question_btn">Ajouter question</button></div></div>')
+                        $('.quizdata').append('<div class="spinner_quiz"><span class="spinner-border  text-primary"></span><span class="spinner-border  text-primary"></span></div>')
+
                         getQuestions();
                         suc(res.message)
 
@@ -150,7 +348,7 @@
             var quizId = $(this).closest('div').find('.id').text();
             $.ajax({
                 method: "GET",
-                url: "controllers/get-quiz.php?quizId=" + quizId,
+                url: "controllers/quiz.php?quizId=" + quizId,
 
                 success: function(response) {
                     var res = jQuery.parseJSON(response);
@@ -159,10 +357,15 @@
                     if (res.status == 422) {
                         err(res.message)
                     } else if (res.status == 200) {
+                        $('.spinner_quiz').html("<span class='spinner-border  text-primary'></span><span class='spinner-border  text-primary'></span>");
+
                         $('.quizdata').html("");
 
                         $('.quizdata').append('<div class="row justify-content-center"><div class="col-md-3"><button class="btn btn-primary refresh_btn">Rafraichir</button></div><div class="col-md-9"><button class="btn btn-primary add_question_btn">Ajouter question</button></div></div>')
+                        $('.quizdata').append('<div class="spinner_quiz"><span class="spinner-border  text-primary"></span><span class="spinner-border  text-primary"></span></div>')
+
                         // suc(res.message)
+
                         getQuestions()
 
                     }
@@ -204,42 +407,44 @@
             $("#addQuestionModal").modal('show')
         })
 
+
+
         //Ouvrir modal Ajouter une reponse
         $(document).on('click', '.addReponse_btn', function() {
             var idQuestion = $(this).closest('div').find('.id').text();
             $.ajax({
-            method: "GET",
-            url: "controllers/get-options-question.php?questionId=" + idQuestion,
+                method: "GET",
+                url: "controllers/questions.php?questionId=" + idQuestion,
 
-            success: function(response) {
-                res = jQuery.parseJSON(response);
-                // console.log(res.res)
-                $('#reponse').html('')
-
-
-                $.each(res.res, function (index, value) { 
-
-                    $('.question_id').val(value.id_qs)
-
-                     $('#reponse').append('<option value="'+value.id_opt+'">'+value.nom_opt+'</option>')
-                });
-            $("#addReponseModal").modal('show')
+                success: function(response) {
+                    res = jQuery.parseJSON(response);
+                    // console.log(res.res)
+                    $('#reponse').html('')
 
 
+                    $.each(res.res, function(index, value) {
 
-                // if (res.status == 422) {
-                //     err(res.message)
-                // } else if (res.status == 200) {
+                        $('.question_id').val(value.id_qs)
 
-                // $('.quizdata').html("");
+                        $('#reponse').append('<option value="' + value.id_opt + '">' + value.nom_opt + '</option>')
+                    });
+                    $("#addReponseModal").modal('show')
 
-                // $('.quizdata').append('<div class="row justify-content-center"><div class="col-md-3"><button class="btn btn-primary refresh_btn">Rafraichir</button></div><div class="col-md-9"><button class="btn btn-primary add_question_btn">Ajouter question</button></div></div>')
-                // suc(res.message)
-                // getQuestions()
 
-                // }
-            }
-        });
+
+                    // if (res.status == 422) {
+                    //     err(res.message)
+                    // } else if (res.status == 200) {
+
+                    // $('.quizdata').html("");
+
+                    // $('.quizdata').append('<div class="row justify-content-center"><div class="col-md-3"><button class="btn btn-primary refresh_btn">Rafraichir</button></div><div class="col-md-9"><button class="btn btn-primary add_question_btn">Ajouter question</button></div></div>')
+                    // suc(res.message)
+                    // getQuestions()
+
+                    // }
+                }
+            });
 
             // alert(questionId)
 
@@ -274,12 +479,19 @@
     }
 
     function getQuiz() {
+        $('.quizdata').html("");
+
         $.ajax({
             type: "GET",
-            url: "controllers/get-all-quiz.php",
+            url: "controllers/quiz.php?quiz=",
             // data: "data",
             // dataType: "dataType",
+            beforeSend: () => {
+                $('.spinner_quiz').html("<span class='spinner-border  text-primary'></span><span class='spinner-border  text-primary'></span>");
+            },
             success: function(data) {
+                $('.spinner_quiz').html("");
+
                 var response = JSON.parse(data)
                 // $('.quizdata').html(data)
                 console.log(response)
@@ -311,13 +523,12 @@
                                                 <div class="border border-grey rounded text text-primary questions_btn">Questions</div>\
                                             </div>\
                                             <div class="col-md-2">\
-                                                <div class="btn btn-warning">Modifier</div>\
+                                                <p style="display:none" class="mb-0 id">' + value.id + '</p>\
+                                                <button class="btn btn-warning editQuiz_btn">Modifier</button>\
                                             </div>\
                                             <div class="col-md-2">\
-                                                <div class="btn btn-primary">Reponses</div>\
-                                            </div>\
-                                            <div class="col-md-2">\
-                                                <div class="btn btn-danger">Supprimer</div>\
+                                                <p style="display:none" class="mb-0 id">' + value.id + '</p>\
+                                                <button class="btn btn-danger deleteQuiz_btn">Supprimer</button>\
                                             </div>\
                                         </div>\
                                     </div>\
@@ -334,10 +545,15 @@
     function getQuestions() {
         $.ajax({
             type: "GET",
-            url: "controllers/get-all-questions.php",
+            url: "controllers/questions.php?questions=",
             // data: "data",
             // dataType: "dataType",
+
             success: function(data) {
+                $('.spinner_quiz').html("");
+
+
+
                 // var response = JSON.parse(data)
                 $('.quizdata').append(data);
 

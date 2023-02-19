@@ -38,6 +38,7 @@
                         </div>
 
                     </form>
+                
                 </div>
 
             </div>
@@ -57,7 +58,7 @@
             formData.append('btnsave', true);
             $.ajax({
                 method: "POST",
-                url: "controllers/add-quiz.php",
+                url: "controllers/quiz.php",
                 data: formData,
                 processData: false,
                 contentType: false,
