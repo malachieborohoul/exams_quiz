@@ -1,5 +1,70 @@
 <?php session_start(); ?>
 <?php require('includes/header.php') ?>
+<?php require('includes/menu.php') ?>
+
+
+<!--  Modal Commercer un quiz -->
+<div class="modal fade" id="startQuizModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form id="startQuiz">
+                <!-- Modal body -->
+                <div class="modal-body justify-content-center">
+                    <input type="hidden" name="id" id="quizId">
+                    Voulez-vous commencer le quiz ?
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Fermer</button>
+                    <button name="btnstart" class="btn btn-danger cdelete_btn">Oui</button>
+                    <div class="spinner_Delete"></div>
+                </div>
+
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal Modifier une reponse -->
+<div class="modal" id="editReponseModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editReponse">
+
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title justify-content">Modifier une reponse</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="container">
+                        <input type="text" name="question_id" style="display:none" class="question_id">
+
+                        <select class="form-control" name="reponse" id="reponse">
+
+                        </select>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fermer</button>
+                            <button class="btn btn-primary save_reponse_btn">Modifier</button>
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -47,6 +112,32 @@
 
 </div>
 
+<!--  Modal de suppression question -->
+<div class="modal fade" id="deleteQuestionModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form id="deleteQuestion">
+                <!-- Modal body -->
+                <div class="modal-body justify-content-center">
+                    <input type="hidden" name="id" id="deleteId">
+                    Voulez vous supprimer ?
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Fermer</button>
+                    <button name="btndelete" class="btn btn-danger cdelete_btn">Oui</button>
+                    <div class="spinner_Delete"></div>
+                </div>
+
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
 <!--  Modal de suppression option -->
 <div class="modal fade" id="deleteOptionModal">
     <div class="modal-dialog modal-sm">
@@ -60,7 +151,7 @@
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary " data-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Fermer</button>
                     <button name="btndelete" class="btn btn-danger cdelete_btn">Oui</button>
                     <div class="spinner_Delete"></div>
                 </div>
@@ -71,6 +162,7 @@
         </div>
     </div>
 </div>
+
 
 <!--  Modal de suppression -->
 <div class="modal fade" id="deleteModal">
@@ -85,7 +177,7 @@
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary " data-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Fermer</button>
                     <button name="btndelete" class="btn btn-danger cdelete_btn">Oui</button>
                     <div class="spinner_Delete"></div>
                 </div>
@@ -106,7 +198,7 @@
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title justify-content">Modifier un quiz</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <!-- Modal body -->
@@ -134,6 +226,11 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <input type="number" name="noteMax" class="form-control noteMax" placeholder="Note maximum" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-check form-switch publier">
+
                                 </div>
                             </div>
                         </div>
@@ -167,7 +264,7 @@
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title justify-content">Ajouter une question</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <!-- Modal body -->
@@ -218,7 +315,7 @@
                 <div class="modal-header">
                     <h4 class="modal-title justify-content">Modifier une question</h4>
                     <div class="spinner"><span class='spinner-border  text-primary'></span><span class='spinner-border  text-primary'></span></div>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <!-- Modal body -->
@@ -226,7 +323,7 @@
                     <div class="container">
                         <div class="form-group">
                             <label><span class="text text-danger">* </span>Id </label>
-                            <input type="hidden" name="id" class="form-control id" required>
+                            <input type="text" name="id" class="form-control id" required>
                             <span id='error_nom' class="text text-danger"></span>
                         </div>
 
@@ -254,7 +351,7 @@
                         <!-- Modal footer -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-                            <button class="btn btn-primary save_question_btn">Ajouter</button>
+                            <button class="btn btn-primary edit_question_btn">Modifier</button>
                             <div class="spinner"></div>
                         </div>
                     </div>
@@ -276,7 +373,7 @@
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title justify-content">Ajouter une reponse</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <!-- Modal body -->
@@ -320,6 +417,170 @@
         // getQuestions();
 
         getQuiz();
+
+        //Ouvir modal Commencer un quiz
+        $(document).on('click', '.startQuiz_btn', function(e) {
+            var quizId = $(this).closest('div').find('.id').text();
+
+            $('#quizId').val(quizId)
+
+
+            $('#startQuizModal').modal('show')
+
+
+
+        });
+
+        //Commencer un quiz
+        $('#startQuiz').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+
+            var id=formData.get('id')
+
+            window.location='start.php?id='+id
+
+        });
+
+        //Modifier une reponse
+        $('#editReponse').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            formData.append('save_reponse_btn', true);
+            $.ajax({
+                method: "POST",
+                url: "controllers/reponses.php",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    var res = jQuery.parseJSON(response);
+                    if (res.status == 422) {
+                        err(res.message)
+                    } else if (res.status == 200) {
+                        // $('#addQuestion')[0].reset();
+                        $('#editReponseModal').modal('hide');
+                        $('.quizdata').html("");
+
+                        $('.quizdata').append('<div class="row justify-content-center"><div class="col-md-3"><button class="btn btn-primary refresh_btn">Rafraichir</button></div><div class="col-md-9"><button class="btn btn-primary add_question_btn">Ajouter question</button></div></div>')
+                        suc(res.message)
+                        getQuestions()
+
+                    }
+                }
+            });
+        });
+
+        //Ouvrir modal Modifier une reponse
+        $(document).on('click', '.editReponse_btn', function() {
+            var idQuestion = $(this).closest('div').find('.id').text();
+            $.ajax({
+                method: "GET",
+                url: "controllers/questions.php?questionId=" + idQuestion,
+
+                success: function(response) {
+                    res = jQuery.parseJSON(response);
+                    // console.log(res.res)
+                    $('#reponse').html('')
+
+
+                    $.each(res.res, function(index, value) {
+
+                        $('.question_id').val(value.id_qs)
+
+                        $('#reponse').append('<option value="' + value.id_opt + '">' + value.nom_opt + '</option>')
+                    });
+                    $("#editReponseModal").modal('show')
+
+
+
+                    // if (res.status == 422) {
+                    //     err(res.message)
+                    // } else if (res.status == 200) {
+
+                    // $('.quizdata').html("");
+
+                    // $('.quizdata').append('<div class="row justify-content-center"><div class="col-md-3"><button class="btn btn-primary refresh_btn">Rafraichir</button></div><div class="col-md-9"><button class="btn btn-primary add_question_btn">Ajouter question</button></div></div>')
+                    // suc(res.message)
+                    // getQuestions()
+
+                    // }
+                }
+            });
+
+            // alert(questionId)
+
+
+            $("#editReponseModal").modal('show')
+        })
+
+
+        //Supprimer une question
+        $('#deleteQuestion').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            formData.append('btndelete', true);
+            $.ajax({
+                method: "POST",
+                url: "controllers/questions.php",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    var res = jQuery.parseJSON(response);
+                    if (res.status == 422) {
+                        err(res.message)
+                    } else if (res.status == 200) {
+                        // $('#addQuestion')[0].reset();
+                        $('#deleteQuestionModal').modal('hide');
+
+                        $('.quizdata').html("");
+
+                        $('.quizdata').append('<div class="row justify-content-center"><div class="col-md-3"><button class="btn btn-primary refresh_btn">Rafraichir</button></div><div class="col-md-9"><button class="btn btn-primary add_question_btn">Ajouter question</button></div></div>')
+                        $('.quizdata').append('<div class="spinner_quiz"><span class="spinner-border  text-primary"></span><span class="spinner-border  text-primary"></span></div>')
+
+                        getQuestions();
+                        succ(res.message)
+
+                    }
+                }
+            });
+
+        });
+
+        //Modifier une question
+        $('#editQuestion').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            formData.append('edit_question_btn', true);
+
+            // console.log(formData)
+            $.ajax({
+                method: "POST",
+                url: "controllers/questions.php",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    var res = jQuery.parseJSON(response);
+                    if (res.status == 422) {
+                        err(res.message)
+                    } else if (res.status == 200) {
+                        // $('#addQuestion')[0].reset();
+                        $('#editQuestionModal').modal('hide');
+
+                        $('.quizdata').html("");
+
+                        $('.quizdata').append('<div class="row justify-content-center"><div class="col-md-3"><button class="btn btn-primary refresh_btn">Rafraichir</button></div><div class="col-md-9"><button class="btn btn-primary add_question_btn">Ajouter question</button></div></div>')
+                        $('.quizdata').append('<div class="spinner_quiz"><span class="spinner-border  text-primary"></span><span class="spinner-border  text-primary"></span></div>')
+
+                        getQuestions();
+                        suc(res.message)
+
+                    }
+                }
+            });
+        });
 
         //Supprimer option
         $("#deleteOption").submit(function(e) {
@@ -402,7 +663,7 @@
             $('#deleteId').val(questionId)
 
             // $('#editQuestionModal').modal('hide')
-            $('#deleteModal').modal('show')
+            $('#deleteQuestionModal').modal('show')
 
 
 
@@ -616,6 +877,18 @@
                     $('.description').val(res.res.description)
                     $('.temps').val(res.res.temps)
                     $('.noteMax').val(res.res.noteMax)
+
+                    if (res.res.statut == 1) {
+                        $('.publier').append('\
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" checked>\
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Publier</label>')
+
+                    } else {
+                        $('.publier').append('\
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">\
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Publier</label>')
+                    }
+
                     $("#editQuizModal").modal('show')
 
 
@@ -739,7 +1012,7 @@
             formData.append('save_reponse_btn', true);
             $.ajax({
                 method: "POST",
-                url: "controllers/add-reponse.php",
+                url: "controllers/reponses.php",
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -884,6 +1157,10 @@
                                             <div class="col-md-2">\
                                                 <p style="display:none" class="mb-0 id">' + value.id + '</p>\
                                                 <button class="btn btn-primary questions_btn">Questions</button>\
+                                            </div>\
+                                            <div class="col-md-2">\
+                                                <p style="display:none" class="mb-0 id">' + value.id + '</p>\
+                                                <button class="btn btn-secondary startQuiz_btn">Commencer</button>\
                                             </div>\
                                             <div class="col-md-2">\
                                                 <div class="border border-grey rounded text text-primary">Note max: ' + value.noteMax + '</div>\

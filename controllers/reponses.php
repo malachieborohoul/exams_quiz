@@ -2,7 +2,7 @@
 session_start();
     require_once '../connect.php';
 
-    
+        // AJOUTER UNE REPONSE
         if(isset($_POST['save_reponse_btn'])){
             $question_id = $_POST['question_id'];
             $reponse = $_POST['reponse'];
@@ -37,5 +37,7 @@ session_start();
 				return false;
 			}
         }
+
+    
     require_once '../close.php';
 ?>
